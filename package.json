@@ -21,7 +21,7 @@
     "url": "https://github.com/uikoo9/cc-ping/issues"
   },
   "bin": {
-    "ccs": "./bin/ccs.js"
+    "ccp": "./bin/ccp.js"
   },
   "files": [
     "bin",

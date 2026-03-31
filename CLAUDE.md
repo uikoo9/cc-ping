@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-cc-switch (`ccs`) is a CLI tool for managing and switching between multiple Claude Code configurations. It stores configs in `~/ccs.json` and writes the active token/baseURL to `~/.claude/settings.json`.
+cc-ping (`ccp`) is a CLI tool for managing and switching between multiple Claude Code configurations. It stores configs in `~/ccp.json` and writes the active token/baseURL to `~/.claude/settings.json`.
 
 ## Mandatory Rules
 
@@ -28,15 +28,15 @@ cc-switch (`ccs`) is a CLI tool for managing and switching between multiple Clau
 
 Flat ESM project (no monorepo). All source lives in `bin/`.
 
-- **Entry point**: `bin/ccs.js` — registers all subcommands via `commander`, parses CLI args
-- **Commands**: `ccs-add.js`, `ccs-use.js`, `ccs-list.js`, `ccs-now.js`, `ccs-remove.js`, `ccs-ping.js`
-- **Config storage**: `bin/config-store.js` — JSON file store using `node:fs/promises`; `bin/util.js` creates the store at `~/ccs.json`
+- **Entry point**: `bin/ccp.js` — registers all subcommands via `commander`, parses CLI args
+- **Commands**: `ccp-add.js`, `ccp-use.js`, `ccp-list.js`, `ccp-now.js`, `ccp-remove.js`, `ccp-ping.js`
+- **Config storage**: `bin/config-store.js` — JSON file store using `node:fs/promises`; `bin/util.js` creates the store at `~/ccp.json`
 
 ## Key Dependencies
 
 - `commander` — CLI framework
 - `chalk` — terminal colors
-- `@inquirer/prompts` — interactive prompts (used in `ccs add`)
+- `@inquirer/prompts` — interactive prompts (used in `ccp add`)
 - `node:fs/promises` — file I/O (built-in, no external dependency)
 
 ## Commands

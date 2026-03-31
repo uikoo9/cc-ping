@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { createStore } from './config-store.js';
 
 export function getDB() {
-  const dbPath = path.resolve(os.homedir(), './ccs.json');
+  const dbPath = path.resolve(os.homedir(), './ccp.json');
   return createStore(dbPath);
 }
 

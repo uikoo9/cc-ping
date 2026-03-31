@@ -53,7 +53,7 @@ const ping = async (options) => {
     const names = Object.keys(all).filter((k) => k !== 'default');
 
     if (names.length === 0) {
-      console.error(chalk.red('No configs found. Run "ccs add" first.'));
+      console.error(chalk.red('No configs found. Run "ccp add" first.'));
       process.exit(1);
     }
 

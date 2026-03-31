@@ -21,59 +21,59 @@ npm i -g cc-ping
 
 ```shell
 # Show help
-ccs -h
+ccp -h
 
 # Add a new config
-ccs add
+ccp add
 
 # List all configs
-ccs list
+ccp list
 
 # Show current config in use
-ccs now
+ccp now
 
 # Switch to a specific config
-ccs use <configName>
+ccp use <configName>
 
 # Remove a config
-ccs remove <configName>
+ccp remove <configName>
 
 # Ping all configs in parallel (the highlight!)
-ccs ping
-ccs ping -t 10   # custom timeout (default: 20s)
+ccp ping
+ccp ping -t 10   # custom timeout (default: 20s)
 ```
 
 ## Example
 
 ```shell
 # Add configs
-$ ccs add
+$ ccp add
 ? Enter a name for this config: official
 ? Token (ANTHROPIC_AUTH_TOKEN): sk-ant-xxx
 ? Base URL (ANTHROPIC_BASE_URL): https://api.anthropic.com
 
-$ ccs add
+$ ccp add
 ? Enter a name for this config: relay1
 ? Token (ANTHROPIC_AUTH_TOKEN): cr_xxx
 ? Base URL (ANTHROPIC_BASE_URL): http://relay1.example.com/api
 
-$ ccs add
+$ ccp add
 ? Enter a name for this config: relay2
 ? Token (ANTHROPIC_AUTH_TOKEN): cr_xxx
 ? Base URL (ANTHROPIC_BASE_URL): http://relay2.example.com/api
 
 # Switch to a config
-$ ccs use official
+$ ccp use official
 Switched to "official"
   Token: sk-ant-x...
   BaseURL: https://api.anthropic.com
 
 # Check current config
-$ ccs now
+$ ccp now
 official is now in use
 
 # List all configs (* marks the active one)
-$ ccs list
+$ ccp list
 Configs:
 
 * official (https://api.anthropic.com)
@@ -81,7 +81,7 @@ Configs:
   relay2 (http://relay2.example.com/api)
 
 # Ping all configs in parallel
-$ ccs ping
+$ ccp ping
 Pinging 3 config(s) in parallel (timeout: 20s)...
 
   ✓ official (https://api.anthropic.com) 8.3s
@@ -91,7 +91,7 @@ Pinging 3 config(s) in parallel (timeout: 20s)...
 
 ## How It Works
 
-Configs are stored in `~/ccs.json`. When you run `ccs use <name>`, it updates **only** `env.ANTHROPIC_AUTH_TOKEN` and `env.ANTHROPIC_BASE_URL` in `~/.claude/settings.json`, leaving all other settings untouched.
+Configs are stored in `~/ccp.json`. When you run `ccp use <name>`, it updates **only** `env.ANTHROPIC_AUTH_TOKEN` and `env.ANTHROPIC_BASE_URL` in `~/.claude/settings.json`, leaving all other settings untouched.
 
 ## License
 
