@@ -1,0 +1,55 @@
+{
+  "name": "cc-switch",
+  "version": "0.0.1",
+  "description": "A lightweight CLI tool to manage and switch between multiple Claude Code configurations easily.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "config",
+    "switch",
+    "cli",
+    "tool"
+  ],
+  "author": "uikoo9 <uikoo9@qq.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/uikoo9/cc-switch#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uikoo9/cc-switch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uikoo9/cc-switch/issues"
+  },
+  "bin": {
+    "ccs": "./bin/ccs.js"
+  },
+  "files": [
+    "bin",
+    "LICENSE",
+    "README.md"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.3.2",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1"
+  }
+}
