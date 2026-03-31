@@ -1,5 +1,5 @@
 {
-  "name": "cc-switch",
+  "name": "cc-config",
   "version": "0.0.1",
   "description": "A lightweight CLI tool to manage and switch between multiple Claude Code configurations easily.",
   "keywords": [

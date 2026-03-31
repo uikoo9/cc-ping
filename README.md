@@ -1,7 +1,7 @@
 ## cc-switch
 
-[![npm version](https://img.shields.io/npm/v/cc-switch.svg?style=flat-square)](https://www.npmjs.org/package/cc-switch)
-[![npm downloads](https://img.shields.io/npm/dm/cc-switch.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cc-switch)
+[![npm version](https://img.shields.io/npm/v/cc-config.svg?style=flat-square)](https://www.npmjs.org/package/cc-config)
+[![npm downloads](https://img.shields.io/npm/dm/cc-config.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cc-config)
 
 A lightweight CLI tool to manage and switch between multiple Claude Code configurations easily.
 
@@ -9,7 +9,7 @@ A lightweight CLI tool to manage and switch between multiple Claude Code configu
 
 ```shell
 # Install globally
-npm i -g cc-switch
+npm i -g cc-config
 ```
 
 ## Usage
