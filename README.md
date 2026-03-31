@@ -1,22 +1,26 @@
-## cc-switch
+## cc-ping
 
-[![npm version](https://img.shields.io/npm/v/cc-config.svg?style=flat-square)](https://www.npmjs.org/package/cc-config)
-[![npm downloads](https://img.shields.io/npm/dm/cc-config.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cc-config)
+[![npm version](https://img.shields.io/npm/v/cc-ping.svg?style=flat-square)](https://www.npmjs.org/package/cc-ping)
+[![npm downloads](https://img.shields.io/npm/dm/cc-ping.svg?style=flat-square)](https://npm-stat.com/charts.html?package=cc-ping)
 
-A lightweight CLI tool to manage and switch between multiple Claude Code configurations easily.
+A lightweight CLI tool to manage multiple Claude Code configurations and **ping them all in parallel** to compare response times.
+
+## Highlights
+
+- **Parallel Ping** — test all your Claude Code endpoints at once, ranked by response time
+- **Configurable Timeout** — default 20s, adjustable via `--timeout`
+- **Simple Config Management** — add / list / switch / remove configs in seconds
 
 ## Installation
 
 ```shell
-# Install globally
-npm i -g cc-config
+npm i -g cc-ping
 ```
 
 ## Usage
 
 ```shell
 # Show help
-ccs
 ccs -h
 
 # Add a new config
@@ -34,7 +38,7 @@ ccs use <configName>
 # Remove a config
 ccs remove <configName>
 
-# Test all configs connectivity and response time (parallel)
+# Ping all configs in parallel (the highlight!)
 ccs ping
 ccs ping -t 10   # custom timeout (default: 20s)
 ```
