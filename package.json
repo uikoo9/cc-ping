@@ -12,13 +12,13 @@
   ],
   "author": "uikoo9 <uikoo9@qq.com>",
   "license": "MIT",
-  "homepage": "https://github.com/uikoo9/cc-switch#readme",
+  "homepage": "https://github.com/uikoo9/cc-ping#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uikoo9/cc-switch.git"
+    "url": "git+https://github.com/uikoo9/cc-ping.git"
   },
   "bugs": {
-    "url": "https://github.com/uikoo9/cc-switch/issues"
+    "url": "https://github.com/uikoo9/cc-ping/issues"
   },
   "bin": {
     "ccs": "./bin/ccs.js"
