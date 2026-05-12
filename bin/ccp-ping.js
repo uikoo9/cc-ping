@@ -1,50 +1,66 @@
-import { spawn } from 'node:child_process';
+import Anthropic from '@anthropic-ai/sdk';
+import { connect } from 'node:net';
 import { program } from 'commander';
 import chalk from 'chalk';
 import { getDB } from './util.js';
 
 const db = getDB();
+const TCP_PING_TIMEOUT = 3000;
 
-function pingOne(name, config, timeoutMs) {
+function tcpPing(baseURL) {
   return new Promise((resolve) => {
-    const start = Date.now();
-    const child = spawn('claude', ['--print', '-p', 'hi', '--output-format', 'text'], {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      env: {
-        ...process.env,
-        ANTHROPIC_AUTH_TOKEN: config.Token,
-        ANTHROPIC_BASE_URL: config.BaseURL,
-      },
-    });
-
-    let done = false;
-    const timer = setTimeout(() => {
-      if (!done) {
-        done = true;
-        child.kill();
-        resolve({ name, baseURL: config.BaseURL, status: 'timeout', elapsed: timeoutMs });
-      }
-    }, timeoutMs);
-
-    child.on('close', (code) => {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      const elapsed = Date.now() - start;
-      if (code === 0) {
-        resolve({ name, baseURL: config.BaseURL, status: 'ok', elapsed });
-      } else {
-        resolve({ name, baseURL: config.BaseURL, status: 'error', elapsed, code });
-      }
-    });
-
-    child.on('error', (err) => {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      resolve({ name, baseURL: config.BaseURL, status: 'error', elapsed: Date.now() - start, err });
-    });
+    try {
+      const u = new URL(baseURL);
+      const host = u.hostname;
+      const port = Number(u.port) || (u.protocol === 'https:' ? 443 : 80);
+      const sock = connect({ host, port, timeout: TCP_PING_TIMEOUT }, () => {
+        sock.destroy();
+        resolve(true);
+      });
+      sock.on('error', () => {
+        sock.destroy();
+        resolve(false);
+      });
+      sock.on('timeout', () => {
+        sock.destroy();
+        resolve(false);
+      });
+    } catch {
+      resolve(false);
+    }
   });
+}
+
+async function pingOne(name, config, timeoutMs, model) {
+  // quick TCP check first
+  const reachable = await tcpPing(config.BaseURL);
+  if (!reachable) {
+    return { name, baseURL: config.BaseURL, status: 'unreachable' };
+  }
+
+  const client = new Anthropic({
+    apiKey: config.Token,
+    baseURL: config.BaseURL,
+    timeout: timeoutMs,
+    maxRetries: 0,
+  });
+
+  const start = Date.now();
+  try {
+    await client.messages.create({
+      model,
+      max_tokens: 10,
+      messages: [{ role: 'user', content: 'hi' }],
+    });
+    return { name, baseURL: config.BaseURL, status: 'ok', elapsed: Date.now() - start };
+  } catch (err) {
+    const elapsed = Date.now() - start;
+    if (err.name === 'APIConnectionTimeoutError' || err.status === 408) {
+      return { name, baseURL: config.BaseURL, status: 'timeout', elapsed: timeoutMs };
+    }
+    const msg = err.message ? err.message.split('\n')[0] : String(err);
+    return { name, baseURL: config.BaseURL, status: 'error', elapsed, stderr: msg };
+  }
 }
 
 const ping = async (options) => {
@@ -58,24 +74,31 @@ const ping = async (options) => {
     }
 
     const timeoutMs = (options.timeout || 20) * 1000;
-    console.log(chalk.blue(`Pinging ${names.length} config(s) in parallel (timeout: ${options.timeout || 20}s)...\n`));
+    const model = options.model || 'claude-sonnet-4-6';
+    console.log(
+      chalk.blue(
+        `Pinging ${names.length} config(s) in parallel (timeout: ${options.timeout || 20}s, model: ${model})...\n`,
+      ),
+    );
 
-    const results = await Promise.all(names.map((name) => pingOne(name, all[name], timeoutMs)));
-
-    // sort by elapsed time
-    results.sort((a, b) => a.elapsed - b.elapsed);
-
-    for (const r of results) {
-      const time = (r.elapsed / 1000).toFixed(1) + 's';
+    function printResult(r) {
+      const time = r.elapsed ? (r.elapsed / 1000).toFixed(1) + 's' : '-';
       const url = chalk.gray(`(${r.baseURL})`);
       if (r.status === 'ok') {
         console.log(`  ${chalk.green('✓')} ${chalk.bold(r.name)} ${url} ${chalk.green(time)}`);
+      } else if (r.status === 'unreachable') {
+        console.log(`  ${chalk.red('✗')} ${chalk.bold(r.name)} ${url} ${chalk.red('unreachable')}`);
       } else if (r.status === 'timeout') {
         console.log(`  ${chalk.yellow('✗')} ${chalk.bold(r.name)} ${url} ${chalk.yellow('timeout')}`);
       } else {
-        console.log(`  ${chalk.red('✗')} ${chalk.bold(r.name)} ${url} ${chalk.red(`error ${time}`)}`);
+        const detail = r.stderr ? r.stderr.trim().split('\n')[0] : '';
+        console.log(
+          `  ${chalk.red('✗')} ${chalk.bold(r.name)} ${url} ${chalk.red(`error ${time}`)} ${chalk.gray(detail)}`,
+        );
       }
     }
+
+    await Promise.all(names.map((name) => pingOne(name, all[name], timeoutMs, model).then(printResult)));
   } catch (e) {
     console.error(chalk.red('Failed to ping.'));
     console.error(e);
@@ -87,4 +110,5 @@ program
   .command('ping')
   .description('test all configs connectivity and response time in parallel')
   .option('-t, --timeout <seconds>', 'timeout per config in seconds', '20')
+  .option('-m, --model <name>', 'model name to use for the test request', 'claude-sonnet-4-6')
   .action(ping);
