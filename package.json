@@ -1,6 +1,6 @@
 {
   "name": "cc-ping",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A lightweight CLI tool to manage multiple Claude Code configurations and ping them all in parallel.",
   "keywords": [
     "claude",
