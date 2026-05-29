@@ -43,14 +43,17 @@ async function pingOne(name, config, timeoutMs, model) {
     baseURL: config.BaseURL,
     timeout: timeoutMs,
     maxRetries: 0,
+    // Some relay providers block the SDK's default "Anthropic/JS" User-Agent at
+    // their WAF. Mimic the Claude CLI's User-Agent so ping behaves like the real client.
+    defaultHeaders: { 'user-agent': 'claude-cli (external, cli)' },
   });
 
   const start = Date.now();
   try {
     await client.messages.create({
       model,
-      max_tokens: 10,
-      messages: [{ role: 'user', content: 'hi' }],
+      max_tokens: 64,
+      messages: [{ role: 'user', content: 'Reply with exactly this word and nothing else: pong' }],
     });
     return { name, baseURL: config.BaseURL, status: 'ok', elapsed: Date.now() - start };
   } catch (err) {
